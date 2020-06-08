@@ -53,13 +53,20 @@ const useStyles = makeStyles((theme)=>({
       }, 
       buttons: {
         backgroundColor: 'rgba(0, 0, 0, .04)'
+      },
+      chats:{
+          "&:hover":{
+              cursor: 'pointer',
+              backgroundColor: 'rgba(0, 0, 0, .04)',
+              borderRadius: '10px'
+          }
       }
 }))
 
 const SidebarHeader = (props)=>{
     const classes = useStyles()
     return(
-        <div className="sidebar-header" style={{height: 'fit-content', margin: '1vh 0.8vw'}}>
+        <div className="sidebar-header" style={{height: 'fit-content', margin: '0 0.8vw 1vh 0.8vw'}}>
             <Grid container>
                 <Grid item xs>
                     <IconButton size="small">
@@ -114,17 +121,22 @@ const SidebarSearch = (props)=>{
 
 const Chat = (props)=>{
     const classes = useStyles()
+    const [isClicked, setIsClicked] = useState(false)
+    var handleOnclick = (e)=>{
+        props.onClick(props.chat)
+        setIsClicked(true)
+    }
     return(
-        <div className={props.className} style={{height: 'fit-content', margin: '1vh 0.8vw'}} key={props.key}>
-            <Grid container xs>
+        <div className={classes.chats} style={isClicked?{height: 48, margin: '1vh 0.8vw',backgroundColor: 'rgba(0, 0, 0, .04)', borderRadius: '10px'}:{height: 48, margin: '1vh 0.8vw',}} key={props.chatId} onClick={handleOnclick}>
+            <Grid container>
                 <Grid item xs sm={2}>
-                    <IconButton size="small">
+                    <IconButton size="medium">
                         {props.user.name[0].toUpperCase()}
                     </IconButton>
                 </Grid>
                 <Grid item xs>
                     <div className="chat-name">{props.user.name}</div>
-                    <div className="chat-last-message">{props.lastMessage}</div>
+                    <div className="chat-last-message">{props.lastMessage? props.lastMessage: 'No message!'}</div>
                 </Grid>
                 <Grid item xs sm={2}>
                     <div className="chat-time">{props.lastMessage? props.lastMessage.time : ''}</div>
@@ -134,15 +146,13 @@ const Chat = (props)=>{
     )
 }
 const Sidebar = (props)=>{
-    const chats = props.chats
-    const activeChat = props.activeChat
-    const setActiveChat = props.setActiveChat
-    const logout = props.logout
-    // const user = props.user
 
+    var handleOnclick = (chat)=>{
+        props.setActiveChat(chat)
+    }
 
     return(
-        <div className="container" style={{borderRight: '1px solid lightgrey', maxWidth: '20vw', height: '100vh'}}>
+        <div className="container" style={{borderRight: '1px solid lightgrey', height: '100vh'}}>
             <SidebarHeader/>
             <SidebarSearch/>
             {/* <Chat key="somethin" className="something" user="anc" lastMessage="yo what's up"/> */}
@@ -153,9 +163,9 @@ const Sidebar = (props)=>{
                         var user = chat.users.find(({name})=>{
                             return name !== props.name
                         }) || {name: "Community"}
-                        var classNames = (activeChat && activeChat.id === chat.id) ? 'active': ''
+                        var classNames = (props.activeChat && props.activeChat.id === chat.id) ? 'active': ''
                         return(
-                            <Chat key={chat.id} className={`user ${classNames}`} onClick={()=>{setActiveChat(chat)}} user={user} lastMessage={lastMessage}/>
+                            <Chat key={chat.id} chatId={chat.id} className={`user ${classNames}`} chat={chat} onClick={handleOnclick} user={user} lastMessage={lastMessage}/>
                         )
                     }
                     return null

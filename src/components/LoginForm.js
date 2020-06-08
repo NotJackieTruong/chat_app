@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 var LoginForm = (props) => {
-  console.log('hellor from login form: ', props.socket)
   const classes = useStyles();
 
   const [nickname, setNickName] = useState('')
@@ -50,6 +49,10 @@ var LoginForm = (props) => {
     // just for testing
     // socket.emit('new message', 'hello 123', setMessage)
   }
+  // 1. when user enter their name, server emits to VERIFY_USER namespace to verify the user nick name
+  // 2. If the nickname is verified successfully, it callbacks the function setUser in login form with isUser=false and user info as parameters
+  // 3. In the setUser() in loginform, if isUser == true => set Error message, else set the parameter for the setUser function of Layout property
+  // 4. In the handleSetUser() in Layout.js, it emits to the socket the user info and the server add that user to the user_connected list
   return (
     <div className={classes.margin}>
       <Grid container spacing={1} alignItems="flex-end">

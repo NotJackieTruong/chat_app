@@ -4,10 +4,10 @@ import {COMMUNITY_CHAT, MESSAGE_RECEIVED, MESSAGE_SENT, TYPING} from '../Events'
 import ChatHeading from './ChatHeading'
 import Messages from './Messages'
 import MessageInput from './MessageInput'
+import Grid from '@material-ui/core/Grid'
 
 
 const ChatContainer = (props)=>{
-    console.log('hello from chat container: ', props.socket)
     var user = props.user
     var logout = props.logout
 
@@ -85,33 +85,43 @@ const ChatContainer = (props)=>{
     var handleSetActiveChat = (activeChat)=>{
         setActiveChat(activeChat)
     }
-
+    console.log('active chat: ', activeChat)
     return(
         <div className="container" style={{height: '100%'}}>
-            <Sidebar 
-                logout = {logout}
-                user = {user}
-                chats={chats}
-                activeChat = {activeChat}
-                setActiveChat = {handleSetActiveChat}
-            />
+            <Grid container>
+                <Grid item xs={3}>  
+                    <Sidebar 
+                    logout = {logout}
+                    user = {user}
+                    chats={chats}
+                    activeChat = {activeChat}
+                    setActiveChat = {handleSetActiveChat}
+                    />
+                </Grid>
+                <Grid item xs>
+                {
+                        activeChat !== null ? (
+                            <div className="chat-room">
+                                {/* display chat dialouge part */}
+                                <ChatHeading name={activeChat.name}/>
+                                <Messages messages={activeChat.messages} user={user} typingUsers={activeChat.typingUsers}/>
+                                <MessageInput sendMessage={(message)=>{sendMessage(activeChat.id, message)}} sendTyping={(isTyping)=>{sendTyping(activeChat.id, isTyping)}}/>
+                            </div>
+
+
+                        ):(<div className="chat-room choose">
+                            <h3>Welcome to our chat application!</h3>
+                        </div>)
+                    }
+
+                </Grid>
+
+            </Grid>
+          
 
             {/* if not choosing the chat room yet, it appears the welcome message, else it appears the chat dialogue */}
             <div className="chat-room-container">
-                {
-                    activeChat !== null ? (
-                        <div className="chat-room">
-                            {/* display chat dialouge part */}
-                            <ChatHeading name={activeChat.name}/>
-                            <Messages messages={activeChat.messages} user={user} typingUsers={activeChat.typingUsers}/>
-                            <MessageInput sendMessage={(message)=>{sendMessage(activeChat.id, message)}} sendTyping={(isTyping)=>{sendTyping(activeChat.id, isTyping)}}/>
-                        </div>
-
-
-                    ):(<div className="chat-room choose">
-                        <h3>Welcome to our chat application!</h3>
-                    </div>)
-                }
+               
 
             </div>
         </div>
