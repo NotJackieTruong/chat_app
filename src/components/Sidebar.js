@@ -115,16 +115,19 @@ const SidebarSearch = (props)=>{
 const Chat = (props)=>{
     const classes = useStyles()
     return(
-        <div className="chat" style={{height: 'fit-content', margin: '1vh 0.8vw'}}>
+        <div className={props.className} style={{height: 'fit-content', margin: '1vh 0.8vw'}} key={props.key}>
             <Grid container xs>
                 <Grid item xs sm={2}>
                     <IconButton size="small">
-                        <AccountCircle className={classes.icons} style={{color: 'blue'}}/>
+                        {props.user.name[0].toUpperCase()}
                     </IconButton>
                 </Grid>
                 <Grid item xs>
-                    <div className="chat-name">Chat name</div>
-                    <div className="chat-last-message">Last message</div>
+                    <div className="chat-name">{props.user.name}</div>
+                    <div className="chat-last-message">{props.lastMessage}</div>
+                </Grid>
+                <Grid item xs sm={2}>
+                    <div className="chat-time">{props.lastMessage? props.lastMessage.time : ''}</div>
                 </Grid>
             </Grid>
         </div>
@@ -135,13 +138,29 @@ const Sidebar = (props)=>{
     const activeChat = props.activeChat
     const setActiveChat = props.setActiveChat
     const logout = props.logout
-    const user = props.user
+    // const user = props.user
+
+
     return(
-                
         <div className="container" style={{borderRight: '1px solid lightgrey', maxWidth: '20vw', height: '100vh'}}>
             <SidebarHeader/>
             <SidebarSearch/>
-            <Chat/>
+            {/* <Chat key="somethin" className="something" user="anc" lastMessage="yo what's up"/> */}
+            <div className="active-chat" style={{marginTop: '2vh'}}>
+                {props.chats.map((chat)=>{
+                    if(chat.name){
+                        var lastMessage = chat.messages[chat.messages.length-1]
+                        var user = chat.users.find(({name})=>{
+                            return name !== props.name
+                        }) || {name: "Community"}
+                        var classNames = (activeChat && activeChat.id === chat.id) ? 'active': ''
+                        return(
+                            <Chat key={chat.id} className={`user ${classNames}`} onClick={()=>{setActiveChat(chat)}} user={user} lastMessage={lastMessage}/>
+                        )
+                    }
+                    return null
+                })}
+            </div>
         </div>
     )
 }

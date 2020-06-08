@@ -9,10 +9,10 @@ const createUser = ({name= ""} = {})=>(
 )
 
 // create message
-const createMessage = ({message="", sender=""} = {})=>({
+const createMessage = ({messages="", sender=""} = {})=>({
   id: uuidv4(),
   time: getTime(new Date(Date.now())),
-  message,
+  messages,
   sender
 })
 
@@ -22,9 +22,9 @@ const getTime = (date)=>{
 }
 
 // create chat
-const createChat = ({message=[], name= "Community", users=[]}={})=>({
+const createChat = ({messages=[], name= "Community", users=[]}={})=>({
   id: uuidv4(),
-  message,
+  messages,
   name,
   users,
   typingUsers: []

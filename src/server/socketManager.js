@@ -1,5 +1,5 @@
 const io = require('./index').io
-const { VERIFY_USER, USER_CONNECTED, LOGOUT } = require("../Events") // import namespaces
+const { VERIFY_USER, USER_CONNECTED, LOGOUT, COMMUNITY_CHAT, MESSAGE_RECEIVED, MESSAGE_SENT} = require("../Events") // import namespaces
 const { createMessage, createChat, createUser } = require('../Factories')
 let connectedUsers = {}
 
@@ -27,6 +27,19 @@ module.exports = function (socket) {
     socket.emit(USER_CONNECTED, connectedUsers)
     console.log('Connected user list: ',connectedUsers)
   })
+
+  socket.on(COMMUNITY_CHAT, (callback)=>{
+		callback(createChat())
+	})
+
+	// socket.on(MESSAGE_SENT, ({chatId, message})=>{
+	// 	sendMessageToChatFromUser(chatId, message)
+	// })
+
+	// socket.on(TYPING, ({chatId, isTyping})=>{
+	// 	sendTypingFromUser(chatId, isTyping)
+	// })
+
 
 }
 

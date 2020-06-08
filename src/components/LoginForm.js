@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 var LoginForm = (props) => {
+  console.log('hellor from login form: ', props.socket)
   const classes = useStyles();
 
   const [nickname, setNickName] = useState('')
