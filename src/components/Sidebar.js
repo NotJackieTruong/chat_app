@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme)=>({
 const SidebarHeader = (props)=>{
     const classes = useStyles()
     return(
-        <div className="sidebar-header" style={{height: 'fit-content', margin: '0 0.8vw 1vh 0.8vw'}}>
+        <div className="sidebar-header" style={{height: 'fit-content', margin: '0 0.8vw', padding: '1vh 0'}}>
             <Grid container>
                 <Grid item xs>
                     <IconButton size="small">
@@ -139,7 +139,7 @@ const Chat = (props)=>{
                     <div className="chat-last-message">{props.lastMessage? props.lastMessage: 'No message!'}</div>
                 </Grid>
                 <Grid item xs sm={2}>
-                    <div className="chat-time">{props.lastMessage? props.lastMessage.time : ''}</div>
+                    <div className="chat-time">{props.lastMessage? props.lastMessage.time : null}</div>
                 </Grid>
             </Grid>
         </div>
@@ -163,7 +163,7 @@ const Sidebar = (props)=>{
                         var user = chat.users.find(({name})=>{
                             return name !== props.name
                         }) || {name: "Community"}
-                        var classNames = (props.activeChat && props.activeChat.id === chat.id) ? 'active': ''
+                        var classNames = (props.activeChat && props.activeChat.id === chat.id) ? 'active': null
                         return(
                             <Chat key={chat.id} chatId={chat.id} className={`user ${classNames}`} chat={chat} onClick={handleOnclick} user={user} lastMessage={lastMessage}/>
                         )
