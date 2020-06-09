@@ -33,7 +33,7 @@ const Messages = (props)=>{
         props.messages.length !== 0? (
           props.messages.map((mes)=>{
             return(
-              <div key={mes.id} className={`message-container ${mes.sender === useRadioGroup.name && "right"}`}>
+              <div key={mes.id} className={`message-container ${mes.sender === props.user.name && "right"}`}>
                 <Message time={mes.time} message={mes.message} sender={mes.sender}/>
               </div>
             )

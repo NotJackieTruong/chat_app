@@ -9,6 +9,7 @@ import ChatContainer from './ChatContainer'
 const socketURL = "http://localhost:3001"
 const Layout = (props)=>{
   const [socket, setSocket] = useState(null)
+  // user account
   const [user, setUser] = useState(null)
 
   // component will mount

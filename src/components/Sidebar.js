@@ -7,6 +7,9 @@ import SearchIcon from '@material-ui/icons/Search'
 import InputBase from '@material-ui/core/InputBase'
 import IconButton from '@material-ui/core/IconButton'
 import Videocam from '@material-ui/icons/Videocam'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import Fade from '@material-ui/core/Fade'
 
 const useStyles = makeStyles((theme)=>({
     search: {
@@ -64,14 +67,39 @@ const useStyles = makeStyles((theme)=>({
 }))
 
 const SidebarHeader = (props)=>{
+    const [anchorEl, setAnchorEl] = useState(null)
+    const open = Boolean(anchorEl)
+
+    const handleClick = (e)=>{
+        setAnchorEl(e.currentTarget)
+    }
+
+    const handleClose = ()=>{
+        setAnchorEl(null)
+    }
+
     const classes = useStyles()
     return(
         <div className="sidebar-header" style={{height: 'fit-content', margin: '0 0.8vw', padding: '1vh 0'}}>
             <Grid container>
                 <Grid item xs>
-                    <IconButton size="small">
-                        <AccountCircle className={classes.icons}/>
+                    <IconButton size="medium" onClick={handleClick}>
+                        {/* <AccountCircle className={classes.icons}/> */}
+                        {props.user.name[0].toUpperCase()}
                     </IconButton>
+                    <Menu
+                        id="fade-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={open}
+                        onClose={handleClose}
+                        TransitionComponent={Fade}
+                        anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                        getContentAnchorEl={null}
+                    >
+                        <MenuItem onClick={handleClose}>Profile</MenuItem>
+                        <MenuItem onClick={()=>{handleClose(); props.logout();}}>Logout</MenuItem>
+                    </Menu>
                    
                 </Grid>
                 <Grid item container xs style={{float: 'right'}}>
@@ -153,7 +181,7 @@ const Sidebar = (props)=>{
 
     return(
         <div className="container" style={{borderRight: '1px solid lightgrey', height: '100vh'}}>
-            <SidebarHeader/>
+            <SidebarHeader user={props.user} logout={props.logout}/>
             <SidebarSearch/>
             {/* <Chat key="somethin" className="something" user="anc" lastMessage="yo what's up"/> */}
             <div className="active-chat" style={{marginTop: '2vh'}}>
