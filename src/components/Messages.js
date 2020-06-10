@@ -27,7 +27,6 @@ const Message = (props)=>{
 
 const Messages = (props)=>{
   const classes = useStyle()
-  console.log('messages: ', props.messages)
   return(
     <div className="thread-container">
       
@@ -45,13 +44,13 @@ const Messages = (props)=>{
           <div>Say hi to your partner</div>
         ) 
       }
-      {
+      {/* {
         props.typingUsers.map((name)=>{
           return(
             <div key={name} className="typing-user">{`${name} is typing...`}</div>
           )
         })
-      }
+      } */}
     </div>
   )
 }

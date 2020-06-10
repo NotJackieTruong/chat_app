@@ -32,7 +32,6 @@ const Layout = (props)=>{
     setUser(null)
   }
 
-  const title = props.title
   return(
     <div className="contaienr">
       {!user? <LoginForm socket={socket} setUser={setUserFunc}/>:<ChatContainer user={user} socket={socket} logout={setLogoutFunc}/>}

@@ -1,16 +1,18 @@
 const io = require('./index').io
 const { VERIFY_USER, USER_CONNECTED, LOGOUT, COMMUNITY_CHAT, MESSAGE_RECEIVED, MESSAGE_SENT, USER_DISCONNECTED} = require("../Events") // import namespaces
 const { createMessage, createChat, createUser } = require('../Factories')
+
 let connectedUsers = {}
 
 // socket.emit('something', 'another something') is used to send to sender-client only
 // io.emit('something', 'another something') is used to send to all connected clients
 
+let communityChat = createChat()
+
 // function to receive message on the server
 module.exports = function (socket) {
-  console.log("Socket id: ", socket.id)
 
-  let sendMessageToChatFromUser
+  let sendMessageToChatFromUser;
   // verify user name
   socket.on(VERIFY_USER, (nickname, callback) => {
     if (isUser(connectedUsers, nickname)) {
@@ -32,7 +34,7 @@ module.exports = function (socket) {
     socket.user = user
     sendMessageToChatFromUser = sendMessageToChat(user.name)
     io.emit(USER_CONNECTED, connectedUsers)
-    console.log('Connected user list: ',socket.user)
+    console.log('Connected user list: ', connectedUsers)
   })
 
   // user disconnected
@@ -52,11 +54,14 @@ module.exports = function (socket) {
   })
   // get community_chat
   socket.on(COMMUNITY_CHAT, (callback)=>{
-		callback(createChat())
+		callback(communityChat)
 	})
 
 	socket.on(MESSAGE_SENT, ({chatId, message})=>{
-		sendMessageToChatFromUser(chatId, message)
+    // sendMessageToChatFromUser(chatId, message)
+    console.log('sender: ', socket.user.name)
+    var sender = socket.user.name
+    io.emit(`${MESSAGE_RECEIVED}-${chatId}`, createMessage({message, sender}))
 	})
 
 	// socket.on(TYPING, ({chatId, isTyping})=>{

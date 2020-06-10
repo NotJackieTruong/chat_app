@@ -13,27 +13,31 @@ const ChatContainer = (props)=>{
 
     const [chats, setChats] = useState([])
     const [activeChat, setActiveChat] = useState(null)
-
     useEffect(()=>{
         const socket = props.socket
         socket.emit(COMMUNITY_CHAT, resetChat)
-    },[])
+    })
 
     var resetChat=(chat)=>{
         return addChat(chat, true)
     }
-
+    // Adds chat to the chat container, if reset is true removes all chats
+	// and sets that chat to the main chat.
+	// Sets the message and typing socket events for the chat.
     var addChat = (chat, reset)=>{
+
         const socket = props.socket
         const newChats = reset ? [chat]:[...chats, chat]
         setChats(newChats)
-        reset? setActiveChat(chat):setActiveChat(activeChat)
+        // // // check if has a new chat, then set that chat active
+        // reset? setActiveChat(chat):setActiveChat(activeChat)
 
         const messageEvent = `${MESSAGE_RECEIVED}-${chat.id}`
         const typingEvent = `${TYPING}-${chat.id}`
 
+        // listen to the namespace messageEvent and typingEvent
         socket.on(messageEvent, addMessageToChat(chat.id))
-        socket.on(typingEvent, updateTypingInChat(chat.id))
+        // socket.on(typingEvent, updateTypingInChat(chat.id))
 
     }
 
@@ -48,10 +52,6 @@ const ChatContainer = (props)=>{
 		}
 	}
 
-	/*
-	*	Updates the typing of chat with id passed in.
-	*	@param chatId {number}
-	*/
 	var updateTypingInChat = (chatId) =>{
 		return ({isTyping, user})=>{
 			if(user !== props.user.name){
@@ -84,7 +84,6 @@ const ChatContainer = (props)=>{
     var handleSetActiveChat = (activeChat)=>{
         setActiveChat(activeChat)
     }
-    console.log('active chat: ', activeChat)
     return(
         <div className="container" style={{height: '100%'}}>
             <Grid container>
@@ -101,7 +100,7 @@ const ChatContainer = (props)=>{
                 {
                         activeChat !== null ? (
                             <div className="chat-room">
-                                {/* display chat dialouge part */}
+                                {/* display chat dialouge part (messages in an active chat) */}
                                 <ChatHeading name={activeChat.name}/>
                                 <Messages messages={activeChat.messages} user={user} typingUsers={activeChat.typingUsers}/>
                                 <MessageInput sendMessage={(message)=>{sendMessage(activeChat.id, message)}} sendTyping={(isTyping)=>{sendTyping(activeChat.id, isTyping)}}/>
