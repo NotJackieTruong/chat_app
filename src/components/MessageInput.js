@@ -10,9 +10,21 @@ const useStyles = (() => ({
 
   }
 }))
-const MessageInput = () => {
+const MessageInput = (props) => {
   const classes = useStyles()
-  console.log('parentn width: ', )
+  const [message, setMessage] = useState("")
+  const [isTyping, setIsTyping] = useState(false)
+  
+  var handleSubmit = (e)=>{
+    e.preventDefault()
+    props.sendMessage(message)
+    setMessage("")
+
+  }
+
+  var sendTyping = ()=>{
+
+  }
   return (
     <div className="message-input-container" style={{
       height: 48,
@@ -21,16 +33,27 @@ const MessageInput = () => {
       bottom: 0,
      
     }}>
-      <Grid container>
+      <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+        <Grid container>
           <Grid item xs={8}>
-            <InputBase id="input" placeholder="Enter your message..." fullwidth={true} style={{ backgroundColor: 'rgba(0, 0, 0, .04)', borderRadius: '18px'}}/>
+            <InputBase 
+              id="input" 
+              placeholder="Enter your message..." 
+              fullwidth="true" 
+              value={message}
+              style={{ backgroundColor: 'rgba(0, 0, 0, .04)', borderRadius: '18px'}}
+              onKeyUp = {(e)=>{e.keyCode !==13 && sendTyping()}}
+              onChange = {(e)=>{console.log(e.target.value);setMessage(e.target.value)}}
+              />
           </Grid>
           <Grid item xs={4}>
-            <Button color="secondary">Send</Button>
+            <Button color="secondary" disabled={message.length<1} type="submit">Send</Button>
 
           </Grid>
 
         </Grid>
+      </form>
+      
     </div>
   )
 }

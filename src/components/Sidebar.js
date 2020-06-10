@@ -188,6 +188,8 @@ const Sidebar = (props)=>{
                 {props.chats.map((chat)=>{
                     if(chat.name){
                         var lastMessage = chat.messages[chat.messages.length-1]
+                        console.log('last message: ', lastMessage)
+
                         var user = chat.users.find(({name})=>{
                             return name !== props.name
                         }) || {name: "Community"}

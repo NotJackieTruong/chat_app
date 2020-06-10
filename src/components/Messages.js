@@ -27,9 +27,12 @@ const Message = (props)=>{
 
 const Messages = (props)=>{
   const classes = useStyle()
+  console.log('messages: ', props.messages)
   return(
     <div className="thread-container">
+      
       {
+
         props.messages.length !== 0? (
           props.messages.map((mes)=>{
             return(

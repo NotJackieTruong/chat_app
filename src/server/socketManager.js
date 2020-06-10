@@ -22,9 +22,9 @@ module.exports = function (socket) {
   })
 
   // test socket emit
-  socket.on('new message', (msg, callback)=>{
-    callback({message: msg})
-  })
+  // socket.on('new message', (msg, callback)=>{
+  //   callback({message: msg})
+  // })
 
   // handle when user is connected
   socket.on(USER_CONNECTED, (user)=>{
@@ -85,6 +85,7 @@ function isUser(userList, username) {
 
 function sendMessageToChat(sender){
   return (chatId, message)=>{
-    io.emit(`${MESSAGE_RECEIVED}-${chatId}`, createMessage({messages, sender}))
+    console.log('Message to chat: ', message)
+    io.emit(`${MESSAGE_RECEIVED}-${chatId}`, createMessage({message, sender}))
   }
 }

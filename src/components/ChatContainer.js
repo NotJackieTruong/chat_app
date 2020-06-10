@@ -14,8 +14,6 @@ const ChatContainer = (props)=>{
     const [chats, setChats] = useState([])
     const [activeChat, setActiveChat] = useState(null)
 
-    
-
     useEffect(()=>{
         const socket = props.socket
         socket.emit(COMMUNITY_CHAT, resetChat)
@@ -29,6 +27,7 @@ const ChatContainer = (props)=>{
         const socket = props.socket
         const newChats = reset ? [chat]:[...chats, chat]
         setChats(newChats)
+        reset? setActiveChat(chat):setActiveChat(activeChat)
 
         const messageEvent = `${MESSAGE_RECEIVED}-${chat.id}`
         const typingEvent = `${TYPING}-${chat.id}`
