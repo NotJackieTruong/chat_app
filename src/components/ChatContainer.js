@@ -48,12 +48,13 @@ const ChatContainer = (props)=>{
                 }
                 return newChat
             })
-            console.log('new chats 2: ', newChats2)
             setChats(newChats2)
         })
         // socket.on(typingEvent, updateTypingInChat(chat.id))
 
     }
+    console.log('new chats 2: ', chats)
+
 
     var addMessageToChat = (chatId)=>{
 

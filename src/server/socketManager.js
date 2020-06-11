@@ -3,7 +3,7 @@ const { VERIFY_USER, USER_CONNECTED, LOGOUT, COMMUNITY_CHAT, MESSAGE_RECEIVED, M
 const { createMessage, createChat, createUser } = require('../Factories')
 
 let connectedUsers = {}
-
+let communityChat = createChat()
 // socket.emit('something', 'another something') is used to send to sender-client only
 // io.emit('something', 'another something') is used to send to all connected clients
 
@@ -53,7 +53,7 @@ module.exports = function (socket) {
   })
   // get community_chat
   socket.on(COMMUNITY_CHAT, (callback)=>{
-		callback(createChat())
+		callback(communityChat)
 	})
 
 	socket.on(MESSAGE_SENT, ({chatId, message})=>{
