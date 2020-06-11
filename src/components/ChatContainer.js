@@ -13,10 +13,12 @@ const ChatContainer = (props)=>{
 
     const [chats, setChats] = useState([])
     const [activeChat, setActiveChat] = useState(null)
+    // componentDidMount()
     useEffect(()=>{
         const socket = props.socket
         socket.emit(COMMUNITY_CHAT, resetChat)
-    })
+    }, [])
+
 
     var resetChat=(chat)=>{
         return addChat(chat, true)
@@ -29,26 +31,43 @@ const ChatContainer = (props)=>{
         const socket = props.socket
         const newChats = reset ? [chat]:[...chats, chat]
         setChats(newChats)
+        setActiveChat(reset? chat: activeChat)
+        console.log('caht: ', newChats)
         // // // check if has a new chat, then set that chat active
-        // reset? setActiveChat(chat):setActiveChat(activeChat)
+        reset? setActiveChat(chat):setActiveChat(activeChat)
 
         const messageEvent = `${MESSAGE_RECEIVED}-${chat.id}`
         const typingEvent = `${TYPING}-${chat.id}`
 
         // listen to the namespace messageEvent and typingEvent
-        socket.on(messageEvent, addMessageToChat(chat.id))
+        // socket.on(messageEvent, addMessageToChat(chat.id))
+        socket.on(messageEvent, (message)=>{
+            var newChats2 = newChats.map((newChat)=>{
+                if(newChat.id == chat.id){
+                    newChat.messages.push(message)
+                }
+                return newChat
+            })
+            console.log('new chats 2: ', newChats2)
+            setChats(newChats2)
+        })
         // socket.on(typingEvent, updateTypingInChat(chat.id))
 
     }
 
     var addMessageToChat = (chatId)=>{
-		return message => {
-			let newChats = chats.map((chat)=>{
-				if(chat.id === chatId)
+
+		return (message) => {
+            console.log('message: ', message)
+            console.log('chat: ', chats)
+			var newChats = chats.map((chat)=>{
+				if(chat.id === chatId){
 					chat.messages.push(message)
+                }
 				return chat
-			})
-            setChats(newChats)
+            })
+            
+            // setChats(newChats)
 		}
 	}
 

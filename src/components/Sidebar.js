@@ -149,6 +149,7 @@ const SidebarSearch = (props) => {
 
 const Chat = (props) => {
     const classes = useStyles()
+    
     const [isClicked, setIsClicked] = useState(false)
     var handleOnclick = (e) => {
         props.onClick(props.chat)
@@ -164,7 +165,7 @@ const Chat = (props) => {
                 </Grid>
                 <Grid item xs>
                     <div className="chat-name">{props.user.name}</div>
-                    <div className="chat-last-message">{props.lastMessage ? props.lastMessage : 'No message!'}</div>
+                    <div className="chat-last-message">{props.lastMessage !== undefined? props.lastMessage.message: 'Undefined!'}</div>
                 </Grid>
                 <Grid item xs sm={2}>
                     <div className="chat-time">{props.lastMessage ? props.lastMessage.time : null}</div>
@@ -175,7 +176,6 @@ const Chat = (props) => {
 }
 
 const Sidebar = (props) => {
-
     var handleOnclick = (chat) => {
         props.setActiveChat(chat)
     }

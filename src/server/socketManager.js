@@ -7,7 +7,6 @@ let connectedUsers = {}
 // socket.emit('something', 'another something') is used to send to sender-client only
 // io.emit('something', 'another something') is used to send to all connected clients
 
-let communityChat = createChat()
 
 // function to receive message on the server
 module.exports = function (socket) {
@@ -54,14 +53,14 @@ module.exports = function (socket) {
   })
   // get community_chat
   socket.on(COMMUNITY_CHAT, (callback)=>{
-		callback(communityChat)
+		callback(createChat())
 	})
 
 	socket.on(MESSAGE_SENT, ({chatId, message})=>{
-    // sendMessageToChatFromUser(chatId, message)
-    console.log('sender: ', socket.user.name)
-    var sender = socket.user.name
-    io.emit(`${MESSAGE_RECEIVED}-${chatId}`, createMessage({message, sender}))
+    sendMessageToChatFromUser(chatId, message)
+    // console.log('sender: ', socket.user.name)
+    // var sender = socket.user.name
+    // io.emit(`${MESSAGE_RECEIVED}-${chatId}`, createMessage({message, sender}))
 	})
 
 	// socket.on(TYPING, ({chatId, isTyping})=>{
