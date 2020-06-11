@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { makeStyles, fade } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-import AccountCircle from '@material-ui/icons/AccountCircle'
 import SettingsRounded from '@material-ui/icons/SettingsRounded'
 import SearchIcon from '@material-ui/icons/Search'
 import InputBase from '@material-ui/core/InputBase'
@@ -10,6 +9,7 @@ import Videocam from '@material-ui/icons/Videocam'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Fade from '@material-ui/core/Fade'
+import Tooltip from '@material-ui/core/Tooltip'
 
 const useStyles = makeStyles((theme) => ({
     search: {
@@ -83,10 +83,15 @@ const SidebarHeader = (props) => {
         <div className="sidebar-header" style={{ height: 'fit-content', margin: '0 0.8vw', padding: '1vh 0' }}>
             <Grid container>
                 <Grid item xs>
-                    <IconButton size="medium" onClick={handleClick}>
-                        {/* <AccountCircle className={classes.icons}/> */}
-                        {props.user.name[0].toUpperCase()}
-                    </IconButton>
+                    <Tooltip title="User account" placement="bottom-end">
+                        <IconButton size="medium" onClick={handleClick}>
+                            {/* <AccountCircle className={classes.icons}/> */}
+                            {props.user.name[0].toUpperCase()}
+                        </IconButton>
+                    </Tooltip>
+
+
+                    {/* <span class="user-name" style={{fontWeight: 'bold', marginRight: '8px', fontSize: '24px', padding: 0, margin: 0}}>{props.user.name}</span> */}
                     <Menu
                         id="fade-menu"
                         anchorEl={anchorEl}
@@ -94,7 +99,7 @@ const SidebarHeader = (props) => {
                         open={open}
                         onClose={handleClose}
                         TransitionComponent={Fade}
-                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
                         getContentAnchorEl={null}
                     >
                         <MenuItem onClick={handleClose}>Profile</MenuItem>
@@ -105,19 +110,28 @@ const SidebarHeader = (props) => {
                 <Grid item container xs style={{ float: 'right' }}>
                     <Grid item xs></Grid>
                     <Grid item xs>
-                        <IconButton size="small" className={classes.buttons}>
-                            <SettingsRounded className={classes.icons} />
-                        </IconButton>
+                        <Tooltip title="Settings" placement="bottom-end">
+                            <IconButton size="small" className={classes.buttons}>
+                                <SettingsRounded className={classes.icons} />
+                            </IconButton>
+                        </Tooltip>
+
                     </Grid>
                     <Grid item xs>
-                        <IconButton size="small" className={classes.buttons}>
-                            <Videocam className={classes.icons} />
-                        </IconButton>
+                        <Tooltip title="Create new meeting" placement="bottom-end">
+                            <IconButton size="small" className={classes.buttons}>
+                                <Videocam className={classes.icons} />
+                            </IconButton>
+                        </Tooltip>
+
                     </Grid>
                     <Grid item xs>
-                        <IconButton size="small" className={classes.buttons}>
-                            <SettingsRounded className={classes.icons} />
-                        </IconButton>
+                        <Tooltip title="Write new messages" placement="bottom-end">
+                            <IconButton size="small" className={classes.buttons}>
+                                <SettingsRounded className={classes.icons} />
+                            </IconButton>
+                        </Tooltip>
+
                     </Grid>
 
 
@@ -149,7 +163,7 @@ const SidebarSearch = (props) => {
 
 const Chat = (props) => {
     const classes = useStyles()
-    
+
     const [isClicked, setIsClicked] = useState(false)
     var handleOnclick = (e) => {
         props.onClick(props.chat)
@@ -164,8 +178,8 @@ const Chat = (props) => {
                     </IconButton>
                 </Grid>
                 <Grid item xs>
-                    <div className="chat-name">{props.user.name}</div>
-                    <div className="chat-last-message">{props.lastMessage !== undefined? props.lastMessage.message: 'Undefined!'}</div>
+                    <div className="chat-name" style={{ fontWeight: 'bold' }}>{props.user.name}</div>
+                    <div className="chat-last-message" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '15vw' }}>{props.lastMessage !== undefined ? props.lastMessage.message : 'No messages!'}</div>
                 </Grid>
                 <Grid item xs sm={2}>
                     <div className="chat-time">{props.lastMessage ? props.lastMessage.time : null}</div>

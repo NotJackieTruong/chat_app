@@ -50,46 +50,31 @@ const ChatContainer = (props)=>{
             })
             setChats(newChats2)
         })
-        // socket.on(typingEvent, updateTypingInChat(chat.id))
-
-    }
-    console.log('new chats 2: ', chats)
-
-
-    var addMessageToChat = (chatId)=>{
-
-		return (message) => {
-            console.log('message: ', message)
-            console.log('chat: ', chats)
-			var newChats = chats.map((chat)=>{
-				if(chat.id === chatId){
-					chat.messages.push(message)
-                }
-				return chat
-            })
-            
-            // setChats(newChats)
-		}
-	}
-
-	var updateTypingInChat = (chatId) =>{
-		return ({isTyping, user})=>{
+        socket.on(typingEvent, ({isTyping, user})=>{
+            // only show the "user is typing" for the client that is not the sender
 			if(user !== props.user.name){
+				var newChats3 = newChats.map((newChat)=>{
+					if(newChat.id === chat.id){
+                        // Scenario 1: user is typing
+                        // typingUser = []
+                        // active chat checks if the user is in typingUser array or not
+                        // if not, then active chat push user into the array
 
-				let newChats = chats.map((chat)=>{
-					if(chat.id === chatId){
-						if(isTyping && !chat.typingUsers.includes(user)){
-							chat.typingUsers.push(user)
-						}else if(!isTyping && chat.typingUsers.includes(user)){
-							chat.typingUsers = chat.typingUsers.filter(u => u !== user)
+                        // Scenerio 2: user is not typing
+                        // Remove objects that is current user and reassigns the active chat's typingUser array
+						if(isTyping && !newChat.typingUsers.includes(user)){
+							newChat.typingUsers.push(user)
+						}else if(!isTyping && newChat.typingUsers.includes(user)){
+							newChat.typingUsers = newChat.typingUsers.filter(u => u !== user)
 						}
 					}
-					return chat
+					return newChat
 				})
-                setChats(newChats)
+                setChats(newChats3)
             }
-		}
-	}
+		})
+
+    }
 
     var sendMessage = (chatId, message)=>{
         const socket = props.socket

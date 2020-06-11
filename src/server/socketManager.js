@@ -1,8 +1,8 @@
 const io = require('./index').io
-const { VERIFY_USER, USER_CONNECTED, LOGOUT, COMMUNITY_CHAT, MESSAGE_RECEIVED, MESSAGE_SENT, USER_DISCONNECTED} = require("../Events") // import namespaces
+const { VERIFY_USER, USER_CONNECTED, LOGOUT, COMMUNITY_CHAT, MESSAGE_RECEIVED, MESSAGE_SENT, USER_DISCONNECTED, TYPING} = require("../Events") // import namespaces
 const { createMessage, createChat, createUser } = require('../Factories')
 
-let connectedUsers = {}
+let connectedUsers = {} // list of connected users
 let communityChat = createChat()
 // socket.emit('something', 'another something') is used to send to sender-client only
 // io.emit('something', 'another something') is used to send to all connected clients
@@ -12,6 +12,7 @@ let communityChat = createChat()
 module.exports = function (socket) {
 
   let sendMessageToChatFromUser;
+  let sendTypingFromUser;
   // verify user name
   socket.on(VERIFY_USER, (nickname, callback) => {
     if (isUser(connectedUsers, nickname)) {
@@ -32,6 +33,7 @@ module.exports = function (socket) {
     connectedUsers = addUser(connectedUsers, user)
     socket.user = user
     sendMessageToChatFromUser = sendMessageToChat(user.name)
+    sendTypingFromUser = sendTypingToChat(user.name)
     io.emit(USER_CONNECTED, connectedUsers)
     console.log('Connected user list: ', connectedUsers)
   })
@@ -63,9 +65,9 @@ module.exports = function (socket) {
     // io.emit(`${MESSAGE_RECEIVED}-${chatId}`, createMessage({message, sender}))
 	})
 
-	// socket.on(TYPING, ({chatId, isTyping})=>{
-	// 	sendTypingFromUser(chatId, isTyping)
-	// })
+	socket.on(TYPING, ({chatId, isTyping})=>{
+		sendTypingFromUser(chatId, isTyping)
+	})
 
 
 }
@@ -91,5 +93,11 @@ function sendMessageToChat(sender){
   return (chatId, message)=>{
     console.log('Message to chat: ', message)
     io.emit(`${MESSAGE_RECEIVED}-${chatId}`, createMessage({message, sender}))
+  }
+}
+
+function sendTypingToChat(user){
+  return (chatId, isTyping)=>{
+    io.emit(`${TYPING}-${chatId}`, {user, isTyping})
   }
 }

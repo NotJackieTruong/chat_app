@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect} from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import FormControl from '@material-ui/core/FormControl'
 import Input from '@material-ui/core/Input'
 import InputBase from '@material-ui/core/InputBase'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
-const useStyles = (() => ({
-  messageInputContainer: {
 
+const useStyles = makeStyles(() => ({
+  messageInputContainer: {
+    position: 'fixed',
+    bottom: 0,
   }
 }))
+
+var lastUpdateTime, typingInterval
+
 const MessageInput = (props) => {
   const classes = useStyles()
   const [message, setMessage] = useState("")
@@ -23,23 +27,42 @@ const MessageInput = (props) => {
   }
 
   var sendTyping = ()=>{
-
+    lastUpdateTime = Date.now()
+    if(!isTyping){
+      setIsTyping(true)
+      props.sendTyping(true)
+      startCheckingTyping()
+    }
   }
+
+  var startCheckingTyping=()=>{
+    console.log("Typing")
+    typingInterval = setInterval(()=>{
+      if((Date.now() - lastUpdateTime)>500){
+        setIsTyping(false)
+        stopCheckingTyping()
+      }
+    })
+  }
+
+  var stopCheckingTyping= ()=>{
+    console.log("Stop typing")
+    if(typingInterval){
+      clearInterval(typingInterval)
+      props.sendTyping(false)
+    }
+  }
+
   return (
-    <div className="message-input-container" style={{
-      height: 48,
-      width: "100%",
-      position: 'fixed',
-      bottom: 0,
-     
-    }}>
-      <form noValidate autoComplete="off" onSubmit={handleSubmit}>
-        <Grid container>
+    <div className={classes.messageInputContainer}>
+      <form noValidate autoComplete="off" onSubmit={handleSubmit} style={{width: '100%'}}>
+        <Grid container wrap="nowrap" spacing={2}>
           <Grid item xs={8}>
-            <InputBase 
+            <Input 
               id="input" 
               placeholder="Enter your message..." 
               fullwidth="true" 
+              disableUnderline="true"
               value={message}
               style={{ backgroundColor: 'rgba(0, 0, 0, .04)', borderRadius: '18px'}}
               onKeyUp = {(e)=>{e.keyCode !==13 && sendTyping()}}

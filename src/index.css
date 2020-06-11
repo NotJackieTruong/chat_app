@@ -1,3 +1,12 @@
-.message-container .right{
-    float: right
+.message-container{
+    display: flex;
+    justify-content: flex-start;
+}
+.message-container.right {
+    justify-content: flex-end;
+}
+
+.message-container.right .message{
+    background-color: #0099FF;
+    color: white;
 }
