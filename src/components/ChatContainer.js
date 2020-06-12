@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import Sidebar from './Sidebar'
-import {COMMUNITY_CHAT, MESSAGE_RECEIVED, MESSAGE_SENT, TYPING, PRIVATE_MESSAGE} from '../Events'
+import {COMMUNITY_CHAT, MESSAGE_RECEIVED, MESSAGE_SENT, TYPING, PRIVATE_MESSAGE, USER_CONNECTED} from '../Events'
 import ChatHeading from './ChatHeading'
 import Messages from './Messages'
 import MessageInput from './MessageInput'
@@ -13,7 +13,7 @@ const ChatContainer = (props)=>{
 
     const [chats, setChats] = useState([])
     const [activeChat, setActiveChat] = useState(null)
-    
+
     // componentDidMount()
     useEffect(()=>{
         const socket = props.socket

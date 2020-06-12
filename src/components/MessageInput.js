@@ -11,7 +11,8 @@ const useStyles = makeStyles(() => ({
     bottom: 0,
     height: '48px',
     width: '100%',
-    padding: '1vh 1vw'
+    margin: '1vh 1vw',
+    backgroundColor: 'white'
   }
 }))
 
@@ -57,7 +58,12 @@ const MessageInput = (props) => {
   }
 
   return (
-    <div className={classes.messageInputContainer}>
+    <div style={{position: 'absolute',
+    bottom: 0,
+    height: '48px',
+    width: '100%',
+    margin: '1vh 1vw',
+    backgroundColor: 'white'}}>
       <form noValidate autoComplete="off" onSubmit={handleSubmit} style={{width: '100%'}}>
         <Grid container wrap="nowrap" spacing={2}>
           <Grid item xs={10}>
@@ -69,7 +75,7 @@ const MessageInput = (props) => {
               value={message}
               style={{ backgroundColor: 'rgba(0, 0, 0, .04)', borderRadius: '18px', width: "100%", padding: '1vh'}}
               onKeyUp = {(e)=>{e.keyCode !==13 && sendTyping()}}
-              onChange = {(e)=>{console.log(e.target.value);setMessage(e.target.value)}}
+              onChange = {(e)=>{setMessage(e.target.value)}}
               />
           </Grid>
           <Grid item xs={2}>

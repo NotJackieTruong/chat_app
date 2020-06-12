@@ -13,10 +13,16 @@
 
 /* css for the message dialouge in Messages.js component */
 .thread-container{
-    padding: 1vw;
+    flex-grow: 1;
+    position: relative;
     overflow-y: scroll;
+}
+
+.thread-container .thread{
+    position: relative;
+    width: 100%;
+    max-height: 800px;
     background-color: lightblue;
-    min-height: max-content;
 }
 
 .thread-container::-webkit-scrollbar {

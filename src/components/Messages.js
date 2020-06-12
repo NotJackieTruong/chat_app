@@ -33,6 +33,7 @@ const Messages = (props)=>{
   const classes = useStyle()
   return(
     <div className="thread-container">
+      <div className="thread">
       {
         props.messages.length !== 0? (
           props.messages.map((mes)=>{
@@ -56,6 +57,8 @@ const Messages = (props)=>{
           )
         })
       }
+      </div>
+      
     </div>
   )
 }
