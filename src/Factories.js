@@ -1,10 +1,11 @@
 // create unique id for each user
 const uuidv4 = require('objectid')
 // create user
-const createUser = ({name= ""} = {})=>(
+const createUser = ({name= "", socketId=null} = {})=>(
   {
     id: uuidv4(),
-    name
+    name,
+    socketId
   }
 )
 

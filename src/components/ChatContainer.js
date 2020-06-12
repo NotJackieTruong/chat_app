@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import Sidebar from './Sidebar'
-import {COMMUNITY_CHAT, MESSAGE_RECEIVED, MESSAGE_SENT, TYPING} from '../Events'
+import {COMMUNITY_CHAT, MESSAGE_RECEIVED, MESSAGE_SENT, TYPING, PRIVATE_MESSAGE} from '../Events'
 import ChatHeading from './ChatHeading'
 import Messages from './Messages'
 import MessageInput from './MessageInput'
@@ -16,34 +16,48 @@ const ChatContainer = (props)=>{
     // componentDidMount()
     useEffect(()=>{
         const socket = props.socket
-        socket.emit(COMMUNITY_CHAT, resetChat)
+        // socket.emit(COMMUNITY_CHAT, resetChat)
+        initSocket(socket)
     }, [])
 
-
-    var resetChat=(chat)=>{
-        return addChat(chat, true)
+    var initSocket = (socket)=>{
+        socket.emit(COMMUNITY_CHAT, resetChat)
+        socket.on(PRIVATE_MESSAGE, addChat)
+        socket.on('connect', ()=>{
+            socket.emit(COMMUNITY_CHAT, resetChat)
+        })
+        socket.emit(PRIVATE_MESSAGE, ({sender: props.user.name, receiver: "someone"}))
     }
+
+    var sendPrivateMessage = (receiver)=>{
+        props.socket.emit(PRIVATE_MESSAGE, {receiver, sender: props.user.name})
+
+    }
+
     // Adds chat to the chat container, if reset is true removes all chats
 	// and sets that chat to the main chat.
 	// Sets the message and typing socket events for the chat.
+    var resetChat=(chat)=>{
+        return addChat(chat, true)
+    }
+   
     var addChat = (chat, reset)=>{
-
         const socket = props.socket
         const newChats = reset ? [chat]:[...chats, chat]
         setChats(newChats)
         setActiveChat(reset? chat: activeChat)
-        console.log('caht: ', newChats)
-        // // // check if has a new chat, then set that chat active
+        
+        // check if has a new chat, then set that chat active
         reset? setActiveChat(chat):setActiveChat(activeChat)
 
         const messageEvent = `${MESSAGE_RECEIVED}-${chat.id}`
         const typingEvent = `${TYPING}-${chat.id}`
 
         // listen to the namespace messageEvent and typingEvent
-        // socket.on(messageEvent, addMessageToChat(chat.id))
         socket.on(messageEvent, (message)=>{
             var newChats2 = newChats.map((newChat)=>{
-                if(newChat.id == chat.id){
+                // only append messages array of an active chat
+                if(newChat.id === chat.id){
                     newChat.messages.push(message)
                 }
                 return newChat
@@ -55,8 +69,9 @@ const ChatContainer = (props)=>{
 			if(user !== props.user.name){
 				var newChats3 = newChats.map((newChat)=>{
 					if(newChat.id === chat.id){
+                        // typingUser = [] (initiate)
+
                         // Scenario 1: user is typing
-                        // typingUser = []
                         // active chat checks if the user is in typingUser array or not
                         // if not, then active chat push user into the array
 
@@ -99,12 +114,13 @@ const ChatContainer = (props)=>{
                     chats={chats}
                     activeChat = {activeChat}
                     setActiveChat = {handleSetActiveChat}
+                    onSendPrivateMessage = {sendPrivateMessage}
                     />
                 </Grid>
                 <Grid item xs>
                 {
                         activeChat !== null ? (
-                            <div className="chat-room">
+                            <div className="chat-room" style={{display: 'flex', flexDirection: 'column', height: '100%', position: 'relative'}}>
                                 {/* display chat dialouge part (messages in an active chat) */}
                                 <ChatHeading name={activeChat.name}/>
                                 <Messages messages={activeChat.messages} user={user} typingUsers={activeChat.typingUsers}/>

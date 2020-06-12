@@ -2,9 +2,6 @@ import React, {useState, useEffect} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
 import { useRadioGroup } from '@material-ui/core'
 const useStyle = makeStyles(()=>({
-  threadContainer:{
-    padding: '1vw'
-  },
   message: {
     backgroundColor: 'rgba(0, 0, 0, .04)',
     borderRadius: '2em',
@@ -35,10 +32,8 @@ const Message = (props)=>{
 const Messages = (props)=>{
   const classes = useStyle()
   return(
-    <div className={classes.threadContainer}>
-      
+    <div className="thread-container">
       {
-
         props.messages.length !== 0? (
           props.messages.map((mes)=>{
             console.log('sender: ', mes.sender, ', user: ', props.user.name)

@@ -7,8 +7,11 @@ import Grid from '@material-ui/core/Grid'
 
 const useStyles = makeStyles(() => ({
   messageInputContainer: {
-    position: 'fixed',
+    position: 'absolute',
     bottom: 0,
+    height: '48px',
+    width: '100%',
+    padding: '1vh 1vw'
   }
 }))
 
@@ -38,7 +41,7 @@ const MessageInput = (props) => {
   var startCheckingTyping=()=>{
     console.log("Typing")
     typingInterval = setInterval(()=>{
-      if((Date.now() - lastUpdateTime)>500){
+      if((Date.now() - lastUpdateTime)>300){
         setIsTyping(false)
         stopCheckingTyping()
       }
@@ -57,19 +60,19 @@ const MessageInput = (props) => {
     <div className={classes.messageInputContainer}>
       <form noValidate autoComplete="off" onSubmit={handleSubmit} style={{width: '100%'}}>
         <Grid container wrap="nowrap" spacing={2}>
-          <Grid item xs={8}>
+          <Grid item xs={10}>
             <Input 
               id="input" 
               placeholder="Enter your message..." 
               fullwidth="true" 
-              disableUnderline="true"
+              disableUnderline={true}
               value={message}
-              style={{ backgroundColor: 'rgba(0, 0, 0, .04)', borderRadius: '18px'}}
+              style={{ backgroundColor: 'rgba(0, 0, 0, .04)', borderRadius: '18px', width: "100%", padding: '1vh'}}
               onKeyUp = {(e)=>{e.keyCode !==13 && sendTyping()}}
               onChange = {(e)=>{console.log(e.target.value);setMessage(e.target.value)}}
               />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={2}>
             <Button color="secondary" disabled={message.length<1} type="submit">Send</Button>
 
           </Grid>

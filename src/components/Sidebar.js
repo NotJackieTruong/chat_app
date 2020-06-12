@@ -144,19 +144,25 @@ const SidebarHeader = (props) => {
 }
 const SidebarSearch = (props) => {
     const classes = useStyles()
+    var handleSubmit = (props)=>{
+
+    }
     return (
         <div className={classes.search} style={{ height: 'fit-content', margin: '0 1vw', backgroundColor: 'rgba(0, 0, 0, .04)' }}>
-            <div className={classes.searchIcon}>
-                <SearchIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} />
-            </div>
-            <InputBase
-                placeholder="Search…"
-                classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                }}
-                inputProps={{ 'aria-label': 'search' }}
-            />
+            <form onSubmit = {handleSubmit}>
+                <div className={classes.searchIcon}>
+                    <SearchIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} />
+                </div>
+                <InputBase
+                    placeholder="Search…"
+                    classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                    }}
+                    inputProps={{ 'aria-label': 'search' }}
+                />
+            </form>
+           
         </div>
     )
 }
@@ -196,7 +202,7 @@ const Sidebar = (props) => {
     return (
         <div className="container" style={{ borderRight: '1px solid lightgrey', height: '100vh' }}>
             <SidebarHeader user={props.user} logout={props.logout} />
-            <SidebarSearch />
+            <SidebarSearch onSendPrivateMessage={props.onSendPrivateMessage}/>
             {/* <Chat key="somethin" className="something" user="anc" lastMessage="yo what's up"/> */}
             <div className="active-chat" style={{ marginTop: '2vh' }}>
                 {props.chats.map((chat) => {

@@ -10,3 +10,16 @@
     background-color: #0099FF;
     color: white;
 }
+
+/* css for the message dialouge in Messages.js component */
+.thread-container{
+    padding: 1vw;
+    overflow-y: scroll;
+    background-color: lightblue;
+    min-height: max-content;
+}
+
+.thread-container::-webkit-scrollbar {
+    display: none;
+  }
+  
