@@ -40,8 +40,10 @@ module.exports = function (socket) {
     user.socketId = socket.id
     connectedUsers = addUser(connectedUsers, user)
     socket.user = user
+
     sendMessageToChatFromUser = sendMessageToChat(user.name)
     sendTypingFromUser = sendTypingToChat(user.name)
+
     io.emit(USER_CONNECTED, connectedUsers)
     console.log('Connected user list: ', connectedUsers)
   })
@@ -82,7 +84,7 @@ module.exports = function (socket) {
   socket.on(PRIVATE_MESSAGE, ({sender, receiver})=>{
     console.log('sender: ', sender, ', receiver: ', receiver)
     if(receiver in connectedUsers){
-      const newChat = createChat({name: `${sender}-${receiver}`, users:[receiver, sender]})
+      const newChat = createChat({name: `${sender},${receiver}`, users:[receiver, sender]})
       const receiverSocket = connectedUsers[receiver].socketId // connectedUsers.receiver.socketId
       // only sending message to sender client if they are in 'sender' room (chanel)
       socket.to(receiverSocket).emit(PRIVATE_MESSAGE, newChat)

@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { makeStyles, fade } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
+// icons
 import SettingsRounded from '@material-ui/icons/SettingsRounded'
 import SearchIcon from '@material-ui/icons/Search'
-import InputBase from '@material-ui/core/InputBase'
-import IconButton from '@material-ui/core/IconButton'
 import Videocam from '@material-ui/icons/Videocam'
+import AddCommentIcon from '@material-ui/icons/AddComment'
+
+import Input from '@material-ui/core/Input'
+import IconButton from '@material-ui/core/IconButton'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Fade from '@material-ui/core/Fade'
@@ -128,7 +131,7 @@ const SidebarHeader = (props) => {
                     <Grid item xs>
                         <Tooltip title="Write new messages" placement="bottom-end">
                             <IconButton size="small" className={classes.buttons}>
-                                <SettingsRounded className={classes.icons} />
+                                <AddCommentIcon className={classes.icons} />
                             </IconButton>
                         </Tooltip>
 
@@ -144,8 +147,16 @@ const SidebarHeader = (props) => {
 }
 const SidebarSearch = (props) => {
     const classes = useStyles()
-    var handleSubmit = (props)=>{
+    const [receiver, setReceiver] = useState("")
 
+    var handleChange = (e)=>{
+        setReceiver(e.target.value)
+    }
+
+    var handleSubmit = (e)=>{
+        e.preventDefault()
+        props.onSendPrivateMessage(receiver)
+        setReceiver("")
     }
     return (
         <div className={classes.search} style={{ height: 'fit-content', margin: '0 1vw', backgroundColor: 'rgba(0, 0, 0, .04)' }}>
@@ -153,13 +164,17 @@ const SidebarSearch = (props) => {
                 <div className={classes.searchIcon}>
                     <SearchIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} />
                 </div>
-                <InputBase
+                <Input
+                    type="text"
                     placeholder="Search…"
                     classes={{
                         root: classes.inputRoot,
                         input: classes.inputInput,
                     }}
+                    disableUnderline={true}
                     inputProps={{ 'aria-label': 'search' }}
+                    value={receiver}
+                    onChange = {handleChange}
                 />
             </form>
            
@@ -180,11 +195,11 @@ const Chat = (props) => {
             <Grid container>
                 <Grid item xs sm={2}>
                     <IconButton size="medium">
-                        {props.user.name[0].toUpperCase()}
+                        {props.chatSideName[0].toUpperCase()}
                     </IconButton>
                 </Grid>
                 <Grid item xs>
-                    <div className="chat-name" style={{ fontWeight: 'bold' }}>{props.user.name}</div>
+                    <div className="chat-name" style={{ fontWeight: 'bold' }}>{props.chatSideName}</div>
                     <div className="chat-last-message" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '15vw' }}>{props.lastMessage !== undefined ? props.lastMessage.message : 'No messages!'}</div>
                 </Grid>
                 <Grid item xs sm={2}>
@@ -201,20 +216,20 @@ const Sidebar = (props) => {
     }
     return (
         <div className="container" style={{ borderRight: '1px solid lightgrey', height: '100vh' }}>
-            <SidebarHeader user={props.user} logout={props.logout} />
+            <SidebarHeader user={props.user} logout={props.logout}/>
             <SidebarSearch onSendPrivateMessage={props.onSendPrivateMessage}/>
             {/* <Chat key="somethin" className="something" user="anc" lastMessage="yo what's up"/> */}
             <div className="active-chat" style={{ marginTop: '2vh' }}>
                 {props.chats.map((chat) => {
                     if (chat.name) {
                         const lastMessage = chat.messages[chat.messages.length - 1];
-                        const user = chat.users.find(({ name }) => {
-                            return name !== this.props.name
-                        }) || { name: "Community" }
+                        const chatSideName = chat.users.find((name) => {
+                            return name !== props.user.name
+                        }) || "Community"
                         const classNames = (props.activeChat && props.activeChat.id === chat.id) ? 'active' : ''
 
                         return (
-                            <Chat key={chat.id} chatId={chat.id} className={`user ${classNames}`} chat={chat} onClick={handleOnclick} user={user} lastMessage={lastMessage} />
+                            <Chat key={chat.id} chatId={chat.id} className={`user ${classNames}`} chat={chat} onClick={handleOnclick} chatSideName={chatSideName} lastMessage={lastMessage} />
 
                         )
                     }

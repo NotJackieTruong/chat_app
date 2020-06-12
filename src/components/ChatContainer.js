@@ -13,6 +13,7 @@ const ChatContainer = (props)=>{
 
     const [chats, setChats] = useState([])
     const [activeChat, setActiveChat] = useState(null)
+    
     // componentDidMount()
     useEffect(()=>{
         const socket = props.socket
@@ -26,22 +27,17 @@ const ChatContainer = (props)=>{
         socket.on('connect', ()=>{
             socket.emit(COMMUNITY_CHAT, resetChat)
         })
-        socket.emit(PRIVATE_MESSAGE, ({sender: props.user.name, receiver: "someone"}))
-    }
-
-    var sendPrivateMessage = (receiver)=>{
-        props.socket.emit(PRIVATE_MESSAGE, {receiver, sender: props.user.name})
-
     }
 
     // Adds chat to the chat container, if reset is true removes all chats
 	// and sets that chat to the main chat.
-	// Sets the message and typing socket events for the chat.
+    // Sets the message and typing socket events for the chat.
+    // the chat parameter here is the result of the callback function createChat() in the socketManager
     var resetChat=(chat)=>{
         return addChat(chat, true)
     }
    
-    var addChat = (chat, reset)=>{
+    var addChat = (chat, reset = false)=>{
         const socket = props.socket
         const newChats = reset ? [chat]:[...chats, chat]
         setChats(newChats)
@@ -53,7 +49,7 @@ const ChatContainer = (props)=>{
         const messageEvent = `${MESSAGE_RECEIVED}-${chat.id}`
         const typingEvent = `${TYPING}-${chat.id}`
 
-        // listen to the namespace messageEvent and typingEvent
+        // receive message event from messageEvent namespace
         socket.on(messageEvent, (message)=>{
             var newChats2 = newChats.map((newChat)=>{
                 // only append messages array of an active chat
@@ -64,6 +60,8 @@ const ChatContainer = (props)=>{
             })
             setChats(newChats2)
         })
+
+        // receive typing event from typingEvent namespace
         socket.on(typingEvent, ({isTyping, user})=>{
             // only show the "user is typing" for the client that is not the sender
 			if(user !== props.user.name){
@@ -104,6 +102,14 @@ const ChatContainer = (props)=>{
     var handleSetActiveChat = (activeChat)=>{
         setActiveChat(activeChat)
     }
+
+    var sendPrivateMessage = (receiver)=>{
+        const socket = props.socket
+        socket.emit(PRIVATE_MESSAGE, {sender: props.user.name, receiver})
+
+    }
+
+    // render component
     return(
         <div className="container" style={{height: '100%'}}>
             <Grid container>
@@ -138,11 +144,11 @@ const ChatContainer = (props)=>{
             </Grid>
           
 
-            {/* if not choosing the chat room yet, it appears the welcome message, else it appears the chat dialogue */}
+            {/* if not choosing the chat room yet, it appears the welcome message, else it appears the chat dialogue
             <div className="chat-room-container">
                
 
-            </div>
+            </div> */}
         </div>
     )
 }
