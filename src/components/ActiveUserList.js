@@ -6,6 +6,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/Inbox';
 import ListSubheader from '@material-ui/core/ListSubheader'
+import IconButton from '@material-ui/core/IconButton'
+
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -23,68 +25,36 @@ const useStyles = makeStyles((theme) => ({
         padding: '0'
       }
   }));
-var handleOnclick = ()=>{
-  console.log('hello')
-}
+
 
 const ActiveUser = (props)=>{
   return(
-    <ListItem button onClick={handleOnclick}>
+    <ListItem button onClick={() => props.handleOnClick(props.userName)}>
       <ListItemIcon>
-        <InboxIcon />
+        <IconButton>{props.userName[0].toUpperCase()}</IconButton>
       </ListItemIcon>
-      <ListItemText primary="Inbox" />
+      <ListItemText primary={props.userName} />
     </ListItem>
   )
 }
 const ActiveUserList = (props)=>{
-	const classes = useStyles();
+  const classes = useStyles();
+  console.log('user list: ', props.userList)
+
+  var handleOnClick = (receiver)=>{
+    console.log('receiver: ', receiver)
+  }
 	return(
 		<div className={classes.root}>
       <ListSubheader disableGutters={true} style={{borderBottom: '1px solid lightgrey', backgroundColor: 'white', width: '100%'}}>Active users</ListSubheader>
 
       <div className={classes.listContainer}>
         <List component="nav" aria-label="main mailbox folders" className={classes.list}>    
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
-          <ActiveUser/>
+          {props.userList.map((user)=>{
+            return(
+              <ActiveUser key={user.id} userName={user.name} handleOnClick={handleOnClick}/>
+            )
+          })}
 
         </List>
 			

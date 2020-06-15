@@ -14,6 +14,8 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Fade from '@material-ui/core/Fade'
 import Tooltip from '@material-ui/core/Tooltip'
 
+import createChatNameFromUser from '../Factories'
+
 const useStyles = makeStyles((theme) => ({
     search: {
         position: 'relative',
@@ -195,11 +197,11 @@ const Chat = (props) => {
             <Grid container>
                 <Grid item xs sm={2}>
                     <IconButton size="medium">
-                        {props.chatSideName[0].toUpperCase()}
+                        {props.name[0].toUpperCase()}
                     </IconButton>
                 </Grid>
                 <Grid item xs>
-                    <div className="chat-name" style={{ fontWeight: 'bold' }}>{props.chatSideName}</div>
+                    <div className="chat-name" style={{ fontWeight: 'bold' }}>{props.name}</div>
                     <div className="chat-last-message" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '15vw' }}>{props.lastMessage !== undefined ? props.lastMessage.message : 'No messages!'}</div>
                 </Grid>
                 <Grid item xs sm={2}>
@@ -214,6 +216,7 @@ const Sidebar = (props) => {
     var handleOnclick = (chat) => {
         props.setActiveChat(chat)
     }
+    console.log('active chat from sidebar: ', props.activeChat)
     return (
         <div className="container" style={{ borderRight: '1px solid lightgrey', height: '100vh' }}>
             <SidebarHeader user={props.user} logout={props.logout}/>
@@ -223,13 +226,23 @@ const Sidebar = (props) => {
                 {props.chats.map((chat) => {
                     if (chat.name) {
                         const lastMessage = chat.messages[chat.messages.length - 1];
-                        const chatSideName = chat.users.find((name) => {
-                            return name !== props.user.name
-                        }) || "Community"
+                        // const chatSideName = chat.users.find((name) => {
+                        //     return name !== props.user.name
+                        // }) || "Community"
                         const classNames = (props.activeChat && props.activeChat.id === chat.id) ? 'active' : ''
 
                         return (
-                            <Chat key={chat.id} chatId={chat.id} className={`user ${classNames}`} chat={chat} onClick={handleOnclick} chatSideName={chatSideName} lastMessage={lastMessage} />
+                            <Chat 
+                                key={chat.id} 
+                                name={chat.isCommunity ? chat.name : createChatNameFromUser(props.users, props.user.name)}
+                                lastMessage={lastMessage} 
+                                onClick={handleOnclick} 
+
+                                chatId={chat.id} 
+                                className={`user ${classNames}`} 
+                                chat={chat} 
+                                chatSideName={props.name} 
+                                />
 
                         )
                     }

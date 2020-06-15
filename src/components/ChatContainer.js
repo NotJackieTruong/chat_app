@@ -15,16 +15,34 @@ const ChatContainer = (props)=>{
 
     var [chats, setChats] = useState([])
     var [activeChat, setActiveChat] = useState(null)
+    var [userList, setUserList] = useState(["abc", "def", "ghi"])
 
     const chatsStateRef = useRef()
     chatsStateRef.current = chats
+
     const activeChatStateRef = useRef()
     activeChatStateRef.current = activeChat
+
+    const userListStateRef = useRef()
+    userListStateRef.current = userList
 
     // componentDidMount()
     useEffect(()=>{
         const socket = props.socket
         // socket.emit(COMMUNITY_CHAT, resetChat)
+        // socket.on(USER_CONNECTED, (user)=>{
+        //     const newUserList = [...userListStateRef.current, user]
+        //     // console.log('user from chat container: ', newUserList)
+            
+        //     setUserList(newUserList)
+        // })
+        // socket.on(USER_CONNECTED, (connectedUser)=>{
+        //     setUserList([])
+        //     Object.keys(connectedUser).map(function(key){
+        //         const newUserList = [...userListStateRef.current, connectedUser[key]]
+        //         setUserList(newUserList)
+        //     })
+        // })
         initSocket(socket)
     }, [])
 
@@ -115,11 +133,9 @@ const ChatContainer = (props)=>{
     var sendPrivateMessage = (receiver)=>{
         const socket = props.socket
         console.log('active chat: ', activeChat)
-        var activeState = activeChatStateRef.current
         socket.emit(PRIVATE_MESSAGE, {sender: props.user.name, receiver, activeChat})
 
     }
-
     // console.log('current state of chats: ', chats)
     // render component
     return(
@@ -129,14 +145,15 @@ const ChatContainer = (props)=>{
                     <Sidebar 
                     logout = {logout}
                     user = {user}
+                    users={userList}
                     chats={chats}
-                    activeChat = {activeChat}
+                    activeChat = {activeChatStateRef.current}
                     setActiveChat = {handleSetActiveChat}
                     onSendPrivateMessage = {sendPrivateMessage}
                     />
                 </Grid>
                 <Grid item xs>
-                {
+                    {
                         activeChat !== null ? (
                             <div className="chat-room" style={{display: 'flex', flexDirection: 'column', height: '100%', position: 'relative'}}>
                                 {/* display chat dialouge part (messages in an active chat) */}
@@ -144,8 +161,6 @@ const ChatContainer = (props)=>{
                                 <Messages messages={activeChat.messages} user={user} typingUsers={activeChat.typingUsers}/>
                                 <MessageInput sendMessage={(message)=>{sendMessage(activeChat.id, message)}} sendTyping={(isTyping)=>{sendTyping(activeChat.id, isTyping)}}/>
                             </div>
-
-
                         ):(<div className="chat-room choose">
                             <h3>Welcome to our chat application!</h3>
                         </div>)
@@ -153,7 +168,7 @@ const ChatContainer = (props)=>{
 
                 </Grid>
                 <Grid item xs={2}>
-                    <ActiveUserList/>
+                    <ActiveUserList userList={userList} handleSendPrivateMessage={sendPrivateMessage}/>
                 </Grid>
 
             </Grid>
