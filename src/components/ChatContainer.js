@@ -1,5 +1,7 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
+// import custom components
 import Sidebar from './Sidebar'
+import ActiveUserList from './ActiveUserList'
 import {COMMUNITY_CHAT, MESSAGE_RECEIVED, MESSAGE_SENT, TYPING, PRIVATE_MESSAGE, USER_CONNECTED} from '../Events'
 import ChatHeading from './ChatHeading'
 import Messages from './Messages'
@@ -11,8 +13,13 @@ const ChatContainer = (props)=>{
     var user = props.user
     var logout = props.logout
 
-    const [chats, setChats] = useState([])
-    const [activeChat, setActiveChat] = useState(null)
+    var [chats, setChats] = useState([])
+    var [activeChat, setActiveChat] = useState(null)
+
+    const chatsStateRef = useRef()
+    chatsStateRef.current = chats
+    const activeChatStateRef = useRef()
+    activeChatStateRef.current = activeChat
 
     // componentDidMount()
     useEffect(()=>{
@@ -36,15 +43,17 @@ const ChatContainer = (props)=>{
     var resetChat=(chat)=>{
         return addChat(chat, true)
     }
-   
-    var addChat = (chat, reset = false)=>{
+
+
+    var addChat = (chat, reset=false)=>{
         const socket = props.socket
-        const newChats = reset ? [chat]:[...chats, chat]
+        const newChats = reset? [chat] : [...chatsStateRef.current, chat]
+        console.log('newChats: ', newChats, ', reset: ', reset, ', chat: ', chat, ', chats: ', chatsStateRef.current)
         setChats(newChats)
-        setActiveChat(reset? chat: activeChat)
+        setActiveChat(reset? chat: activeChatStateRef.current)
         
         // check if has a new chat, then set that chat active
-        reset? setActiveChat(chat):setActiveChat(activeChat)
+        // reset? setActiveChat(chat):setActiveChat(activeChat)
 
         const messageEvent = `${MESSAGE_RECEIVED}-${chat.id}`
         const typingEvent = `${TYPING}-${chat.id}`
@@ -105,10 +114,13 @@ const ChatContainer = (props)=>{
 
     var sendPrivateMessage = (receiver)=>{
         const socket = props.socket
-        socket.emit(PRIVATE_MESSAGE, {sender: props.user.name, receiver})
+        console.log('active chat: ', activeChat)
+        var activeState = activeChatStateRef.current
+        socket.emit(PRIVATE_MESSAGE, {sender: props.user.name, receiver, activeChat})
 
     }
 
+    // console.log('current state of chats: ', chats)
     // render component
     return(
         <div className="container" style={{height: '100%'}}>
@@ -139,6 +151,9 @@ const ChatContainer = (props)=>{
                         </div>)
                     }
 
+                </Grid>
+                <Grid item xs={2}>
+                    <ActiveUserList/>
                 </Grid>
 
             </Grid>

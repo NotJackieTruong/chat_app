@@ -3,7 +3,7 @@ const { VERIFY_USER, USER_CONNECTED, LOGOUT, COMMUNITY_CHAT, MESSAGE_RECEIVED, M
 const { createMessage, createChat, createUser } = require('../Factories')
 
 let connectedUsers = {} // list of connected users
-let communityChat = createChat()
+let communityChat = createChat({isCommunity:true})
 
 // socket.emit('something', 'another something') is used to send to sender-client only
 // io.emit('something', 'another something') is used to send to all connected clients
@@ -74,21 +74,27 @@ module.exports = function (socket) {
 	socket.on(MESSAGE_SENT, ({chatId, message})=>{
     sendMessageToChatFromUser(chatId, message)
 	})
-
+ 
   // receive typing event
 	socket.on(TYPING, ({chatId, isTyping})=>{
 		sendTypingFromUser(chatId, isTyping)
 	})
 
   // receive private message event
-  socket.on(PRIVATE_MESSAGE, ({sender, receiver})=>{
+  socket.on(PRIVATE_MESSAGE, ({sender, receiver, activeChat})=>{
     console.log('sender: ', sender, ', receiver: ', receiver)
+    console.log('active chat: ',  JSON.stringify(activeChat.id) === JSON.stringify(communityChat.id), ', community chat: ', communityChat.id)
     if(receiver in connectedUsers){
-      const newChat = createChat({name: `${sender},${receiver}`, users:[receiver, sender]})
       const receiverSocket = connectedUsers[receiver].socketId // connectedUsers.receiver.socketId
-      // only sending message to sender client if they are in 'sender' room (chanel)
-      socket.to(receiverSocket).emit(PRIVATE_MESSAGE, newChat)
-      socket.emit(PRIVATE_MESSAGE, newChat)
+      if(activeChat === null || JSON.stringify(activeChat.id) === JSON.stringify(communityChat.id)){
+        const newChat = createChat({name: `${sender},${receiver}`, users:[receiver, sender]})
+        // only sending message to sender client if they are in 'sender' room (chanel)
+        socket.to(receiverSocket).emit(PRIVATE_MESSAGE, newChat)
+        socket.emit(PRIVATE_MESSAGE, newChat)
+      }else{
+        socket.to(receiverSocket).emit(PRIVATE_MESSAGE, activeChat)
+      }
+      
     }
 
   })

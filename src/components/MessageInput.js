@@ -10,7 +10,7 @@ const useStyles = makeStyles(() => ({
     position: 'absolute',
     bottom: 0,
     height: '48px',
-    width: '100%',
+    width: '95%',
     margin: '1vh 1vw',
     backgroundColor: 'white'
   }
@@ -40,9 +40,8 @@ const MessageInput = (props) => {
   }
 
   var startCheckingTyping=()=>{
-    console.log("Typing")
     typingInterval = setInterval(()=>{
-      if((Date.now() - lastUpdateTime)>300){
+      if((Date.now() - lastUpdateTime)>3000){
         setIsTyping(false)
         stopCheckingTyping()
       }
@@ -50,7 +49,6 @@ const MessageInput = (props) => {
   }
 
   var stopCheckingTyping= ()=>{
-    console.log("Stop typing")
     if(typingInterval){
       clearInterval(typingInterval)
       props.sendTyping(false)
@@ -58,15 +56,10 @@ const MessageInput = (props) => {
   }
 
   return (
-    <div style={{position: 'absolute',
-    bottom: 0,
-    height: '48px',
-    width: '100%',
-    margin: '1vh 1vw',
-    backgroundColor: 'white'}}>
-      <form noValidate autoComplete="off" onSubmit={handleSubmit} style={{width: '100%'}}>
+    <div className={classes.messageInputContainer}>
+      <form noValidate autoComplete="off" onSubmit={handleSubmit}>
         <Grid container wrap="nowrap" spacing={2}>
-          <Grid item xs={10}>
+          <Grid item xs={11}>
             <Input 
               id="input" 
               placeholder="Enter your message..." 
@@ -78,8 +71,8 @@ const MessageInput = (props) => {
               onChange = {(e)=>{setMessage(e.target.value)}}
               />
           </Grid>
-          <Grid item xs={2}>
-            <Button color="secondary" disabled={message.length<1} type="submit">Send</Button>
+          <Grid item xs={1}>
+            <Button color="secondary" disabled={message.length<1} type="submit" size="small">Send</Button>
 
           </Grid>
 

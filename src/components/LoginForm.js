@@ -5,6 +5,8 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Button from '@material-ui/core/Button'
+import Input from '@material-ui/core/Input'
+
 
 import {VERIFY_USER} from '../Events'
 
@@ -55,19 +57,32 @@ var LoginForm = (props) => {
   // 4. In the handleSetUser() in Layout.js, it emits to the socket the user info and the server add that user to the user_connected list
   return (
     <div className={classes.margin}>
+      <form type="text" onSubmit={handleSubmit} autoComplete="off">
       <Grid container spacing={1} alignItems="flex-end">
         <Grid item>
           <AccountCircle />
         </Grid>
         <Grid item>
-          <TextField id="input-with-icon-grid" label="Nickname" onChange={handleChange} fullWidth />
+          <Input value={nickname} onChange={handleChange} fullWidth={true} placeholder="Your nickname..."/>
+          <div className="error">{error? error:null}</div>
+          <Button type="submit">Enter</Button>
+         
+         
+          {/* <TextField id="input-with-icon-grid" label="Nickname" onChange={handleChange} fullWidth />
           <div className="error">{error ? error : null}</div>
+          
           <Button variant="contained" color="primary" fullWidth onClick={handleSubmit}>
             Primary
-          </Button>
+          </Button> */}
         </Grid>
       </Grid>
+
+      </form>
+    
+
     </div>
+
+
   );
 }
 

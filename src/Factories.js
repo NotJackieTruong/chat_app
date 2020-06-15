@@ -23,16 +23,22 @@ const getTime = (date)=>{
 }
 
 // create chat
-const createChat = ({messages=[], name= "Community", users=[]}={})=>({
+const createChat = ({messages=[], name= "Community", users=[], isCommunity = false}={})=>({
   id: uuidv4(),
   messages,
-  name,
+  name: isCommunity? "Community": createChatNameFromUser(users),
   users,
-  typingUsers: []
+  typingUsers: [],
+  isCommunity
 })
+
+const createChatNameFromUser = (users, excludeUser = "")=>{
+  return users.filter(u => u !== excludeUser).join(', ') || "Empty users"
+}
 
 module.exports ={
   createMessage,
   createChat,
-  createUser
+  createUser,
+  createChatNameFromUser
 }
