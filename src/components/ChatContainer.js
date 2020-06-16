@@ -2,7 +2,7 @@ import React, {useState, useEffect, useRef} from 'react'
 // import custom components
 import Sidebar from './Sidebar'
 import ActiveUserList from './ActiveUserList'
-import {COMMUNITY_CHAT, MESSAGE_RECEIVED, MESSAGE_SENT, TYPING, PRIVATE_MESSAGE, USER_CONNECTED, USER_DISCONNECTED} from '../Events'
+import {COMMUNITY_CHAT, MESSAGE_RECEIVED, MESSAGE_SENT, TYPING, PRIVATE_MESSAGE, USER_CONNECTED, USER_DISCONNECTED, NEW_CHAT_USER} from '../Events'
 import ChatHeading from './ChatHeading'
 import Messages from './Messages'
 import MessageInput from './MessageInput'
@@ -52,10 +52,12 @@ const ChatContainer = (props)=>{
 
     var initSocket = (socket)=>{
         socket.emit(COMMUNITY_CHAT, resetChat)
+        // listen on private message namespace
         socket.on(PRIVATE_MESSAGE, addChat)
         socket.on('connect', ()=>{
             socket.emit(COMMUNITY_CHAT, resetChat)
         })
+        // listen on event when user is connected
         socket.on(USER_CONNECTED, (connectedUsers)=>{
             setUserList([])
             Object.keys(connectedUsers).map(function(key){
@@ -63,13 +65,22 @@ const ChatContainer = (props)=>{
                 setUserList(newUserList)
             })
         })
+
+        // listen on event when user is disconnected
         socket.on(USER_DISCONNECTED, (connectedUsers)=>{
+            const removedUsers = userListStateRef.current.filter(otherUser => !connectedUsers.some(connectedUser=>connectedUser.id === otherUser.id))
+            console.log('remove user: ', removedUsers)
+            removeUsersFromChat(removedUsers)
             setUserList([])
             Object.keys(connectedUsers).map(function(key){
                 const newUserList = [...userListStateRef.current, connectedUsers[key]]
                 setUserList(newUserList)
             })
         })
+
+        socket.on(NEW_CHAT_USER, addUserToChat)
+
+        // 
     }
 
     // Adds chat to the chat container, if reset is true removes all chats
@@ -89,8 +100,6 @@ const ChatContainer = (props)=>{
         // setActiveChat(reset? chat: activeChatStateRef.current)
         
         // check if has a new chat, then set that chat active
-        // reset? setActiveChat(chat):setActiveChat(activeChat)
-
         const messageEvent = `${MESSAGE_RECEIVED}-${chat.id}`
         const typingEvent = `${TYPING}-${chat.id}`
 
@@ -153,6 +162,24 @@ const ChatContainer = (props)=>{
         console.log('active chat: ', activeChat)
         socket.emit(PRIVATE_MESSAGE, {sender: props.user.name, receiver, activeChat})
 
+    }
+
+    var addUserToChat = ({chatId, newUser})=>{
+        const newChats = chatsStateRef.current.map(chat=>{
+            if(chat.id === chatId){
+                return Object.assign({}, chat, {users: [...chat.users, newUser]})
+            }
+            return chat
+        })
+        setChats(newChats)
+    }
+
+    var removeUsersFromChat = (removeUsers)=>{
+        const newChats = chatsStateRef.map(chat =>{
+            let newUsers = chat.users.filter(user=> !removeUsers.includes(user))
+            return Object.assign({}, chat, {users: newUsers})
+        })
+        setChats(newChats)
     }
     // console.log('current state of chats: ', chats)
     // render component
