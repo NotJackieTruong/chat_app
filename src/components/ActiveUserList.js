@@ -52,7 +52,8 @@ const ActiveUserList = (props)=>{
       <ListSubheader disableGutters={true} style={{borderBottom: '1px solid lightgrey', backgroundColor: 'white', width: '100%'}}>Active users</ListSubheader>
 
       <div className={classes.listContainer}>
-        <List component="nav" aria-label="main mailbox folders" className={classes.list}>    
+        <List component="nav" aria-label="main mailbox folders" className={classes.list}>   
+         {/*filter all users that is not current user  */}
           {props.userList.filter(otherUser => otherUser.name !== props.user.name).map((user)=>{
             return(
               <ActiveUser key={user.id} userName={user.name} handleOnClick={handleOnClick}/>
