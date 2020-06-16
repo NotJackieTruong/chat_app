@@ -30,11 +30,6 @@ module.exports = function (socket) {
 
   })
 
-  // test socket emit
-  // socket.on('new message', (msg, callback)=>{
-  //   callback({message: msg})
-  // })
-
   // handle when user is connected
   socket.on(USER_CONNECTED, (user)=>{
     user.socketId = socket.id
@@ -83,7 +78,6 @@ module.exports = function (socket) {
   // receive private message event
   socket.on(PRIVATE_MESSAGE, ({sender, receiver, activeChat})=>{
     console.log('sender: ', sender, ', receiver: ', receiver)
-    console.log('active chat: ',  JSON.stringify(activeChat.id) === JSON.stringify(communityChat.id), ', community chat: ', communityChat.id)
     if(receiver in connectedUsers){
       const receiverSocket = connectedUsers[receiver].socketId // connectedUsers.receiver.socketId
       if(activeChat === null || JSON.stringify(activeChat.id) === JSON.stringify(communityChat.id)){

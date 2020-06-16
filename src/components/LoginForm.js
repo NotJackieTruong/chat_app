@@ -23,7 +23,6 @@ var LoginForm = (props) => {
   const [error, setError] = useState('')
 
   const setUser = ({isUser, user})=>{
-    console.log('user: ', user, ', isUser: ', isUser)
     if(isUser){
       setError('User name taken!')
     } else {
@@ -38,12 +37,10 @@ var LoginForm = (props) => {
 
   const handleChange = (e) => {
     setNickName(e.target.value)
-    console.log(nickname)
   }
 
   const handleSubmit = (e)=>{
     e.preventDefault()
-    console.log(props)
     const socket = props.socket
     // send verify user event to the server
     socket.emit(VERIFY_USER, nickname, setUser)
