@@ -81,7 +81,7 @@ const Messages = (props)=>{
         props.messages.length !== 0? (
           props.messages.map((mes)=>{
             return(
-              <div className={`message-container ${mes.sender === props.user.name && "right"}`}>
+              <div key={mes.id} className={`message-container ${mes.sender === props.user.name && "right"}`}>
                 <Message key={mes.id} id={mes.id} time={mes.time} message={mes.message} sender={mes.sender}/>
                 <div className={classes.time}><p>{mes.time}</p></div>
               </div>

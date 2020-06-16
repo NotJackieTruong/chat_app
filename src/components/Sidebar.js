@@ -14,7 +14,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Fade from '@material-ui/core/Fade'
 import Tooltip from '@material-ui/core/Tooltip'
 
-import createChatNameFromUser from '../Factories'
+import {createChatNameFromUser} from '../Factories'
 
 const useStyles = makeStyles((theme) => ({
     search: {
@@ -234,7 +234,7 @@ const Sidebar = (props) => {
                         return (
                             <Chat 
                                 key={chat.id} 
-                                name={chat.isCommunity ? chat.name : createChatNameFromUser(props.users, props.user.name)}
+                                name={chat.isCommunity ? chat.name : createChatNameFromUser(chat.users, props.user.name)}
                                 lastMessage={lastMessage} 
                                 onClick={handleOnclick} 
 

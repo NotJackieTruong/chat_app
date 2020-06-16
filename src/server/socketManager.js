@@ -30,11 +30,6 @@ module.exports = function (socket) {
 
   })
 
-  // test socket emit
-  // socket.on('new message', (msg, callback)=>{
-  //   callback({message: msg})
-  // })
-
   // handle when user is connected
   socket.on(USER_CONNECTED, (user)=>{
     user.socketId = socket.id

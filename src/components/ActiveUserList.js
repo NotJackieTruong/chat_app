@@ -39,10 +39,13 @@ const ActiveUser = (props)=>{
 }
 const ActiveUserList = (props)=>{
   const classes = useStyles();
-  console.log('user list: ', props.userList)
+  var addChatForUser = (userName)=>{
+    props.handleSendPrivateMessage( userName )
+  }
 
   var handleOnClick = (receiver)=>{
     console.log('receiver: ', receiver)
+    addChatForUser(receiver)
   }
 	return(
 		<div className={classes.root}>
@@ -50,7 +53,7 @@ const ActiveUserList = (props)=>{
 
       <div className={classes.listContainer}>
         <List component="nav" aria-label="main mailbox folders" className={classes.list}>    
-          {props.userList.map((user)=>{
+          {props.userList.filter(otherUser => otherUser.name !== props.user.name).map((user)=>{
             return(
               <ActiveUser key={user.id} userName={user.name} handleOnClick={handleOnClick}/>
             )

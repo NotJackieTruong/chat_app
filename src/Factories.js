@@ -1,5 +1,5 @@
 // create unique id for each user
-const uuidv4 = require('objectid')
+const uuidv4 = require('bson-objectid')
 // create user
 const createUser = ({name= "", socketId=null} = {})=>(
   {
