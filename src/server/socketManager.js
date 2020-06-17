@@ -85,12 +85,11 @@ module.exports = function (socket) {
         // only sending message to sender client if they are in 'sender' room (chanel)
         socket.to(receiverSocket).emit(PRIVATE_MESSAGE, newChat)
         socket.emit(PRIVATE_MESSAGE, newChat)
-      }else{
+      }else{// active chat !== null || activeChat.id !== communityChat.id (means not community chat/ no active chat at the moment)
         if(!(receiver in activeChat.users)){
           activeChat.users.filter( user => user in connectedUsers)
                           .map(user=>connectedUsers[user])
-                          .map(user=>{socket.to(user.socketId)
-                          .emit(NEW_CHAT_USER, {chatId: activeChat.id, newUser: receiver})})
+                          .map(user=>{socket.to(user.socketId).emit(NEW_CHAT_USER, {chatId: activeChat.id, newUser: receiver})})
           socket.emit(NEW_CHAT_USER, {chatId: activeChat.id, newUser: receiver})
         }
         socket.to(receiverSocket).emit(PRIVATE_MESSAGE, activeChat)

@@ -68,9 +68,10 @@ const ChatContainer = (props)=>{
 
         // listen on event when user is disconnected
         socket.on(USER_DISCONNECTED, (connectedUsers)=>{
-            const removedUsers = userListStateRef.current.filter(otherUser => !connectedUsers.some(connectedUser=>connectedUser.id === otherUser.id))
-            console.log('remove user: ', removedUsers)
-            removeUsersFromChat(removedUsers)
+            console.log('connected user: ',connectedUsers)
+            // const removedUsers = userListStateRef.current.filter(otherUser => !connectedUsers.some(connectedUser=>connectedUser.id === otherUser.id))
+            // console.log('remove user: ', removedUsers)
+            // removeUsersFromChat(removedUsers)
             setUserList([])
             Object.keys(connectedUsers).map(function(key){
                 const newUserList = [...userListStateRef.current, connectedUsers[key]]
@@ -174,6 +175,7 @@ const ChatContainer = (props)=>{
         setChats(newChats)
     }
 
+    // remove users from chat
     var removeUsersFromChat = (removeUsers)=>{
         const newChats = chatsStateRef.map(chat =>{
             let newUsers = chat.users.filter(user=> !removeUsers.includes(user))
@@ -217,13 +219,6 @@ const ChatContainer = (props)=>{
                 </Grid>
 
             </Grid>
-          
-
-            {/* if not choosing the chat room yet, it appears the welcome message, else it appears the chat dialogue
-            <div className="chat-room-container">
-               
-
-            </div> */}
         </div>
     )
 }
