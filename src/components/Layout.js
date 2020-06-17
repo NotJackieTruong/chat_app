@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import io from 'socket.io-client'
-import {USER_CONNECTED, LOGOUT} from '../Events'
+import {USER_CONNECTED, LOGOUT, VERIFY_USER} from '../Events'
 import LoginForm from './LoginForm'
 import ChatContainer from './ChatContainer'
 
@@ -11,15 +11,33 @@ const Layout = (props)=>{
   const [socket, setSocket] = useState(null)
   // user account
   const [user, setUser] = useState(null)
+  const userStateRef = useRef()
+  userStateRef.current = user
 
   // component will mount
   useEffect(()=>{
     const socket = io(socketURL)
     socket.on('connect', ()=>{
-      console.log('Socket connected!')
+      if(userStateRef.current){
+        reconnect(socket)
+      }else{
+        console.log('Socket connected!')
+
+      }
     })
     setSocket(socket)
   }, [])
+
+  var reconnect = (socket)=>{
+    socket.emit(VERIFY_USER, userStateRef.current.name, ({isUser, user})=>{
+      if(isUser){
+        setUser(null)
+      } else {
+        setUser(user)
+      }
+    })
+
+  }
 
   var setUserFunc = (user)=>{
     // send user connected event to the server
